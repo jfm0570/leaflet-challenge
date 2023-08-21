@@ -1,11 +1,8 @@
 function createMap(circle_list) {
- 
-
     // Create the tile layer that will be the background of our map.
     let streetmap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     });
-  
   
     // Create a baseMaps object to hold the streetmap layer.
     let baseMaps = {
@@ -20,7 +17,7 @@ function createMap(circle_list) {
     // Create the map object with options.
     let map = L.map("map", {
       center: [37.8, -96],
-      zoom: 2,
+      zoom: 5,
       layers: [streetmap, circle_list]
     });
   
@@ -36,9 +33,27 @@ function createMap(circle_list) {
     L.control.layers(baseMaps, overlayMaps, {
       collapsed: false
     }).addTo(map);
+
+
+    var legend = L.control({position: 'bottomright'});
+    legend.onAdd = function (map) {
+
+        var div = L.DomUtil.create('div', 'info legend'),
+            grades = [-10, 10, 30, 50, 70, 80, 90],
+            labels = [];
+
+        // loop through our density intervals and generate a label with a colored square for each interval
+        for (var i = 0; i < grades.length; i++) {
+            div.innerHTML +=
+                '<i style="background:' + getColor(grades[i] + 1) + '"></i> ' +
+                grades[i] + (grades[i + 1] ? '&ndash;' + grades[i + 1] + '<br>' : '+');
+        }
+        return div;
+    };
+    legend.addTo(map);
   }
   
-
+// Piece of code obtained from: https://leafletjs.com/examples/choropleth/
     function getColor(d) {
         return d > 90  ? '#d73027' :
             d > 70  ? '#fc8d59' :
@@ -49,21 +64,15 @@ function createMap(circle_list) {
     }   
 
   function createMarkers(response) {
-
-    // Pull the "stations" property from response.data.
-    //  let stations = response.data.stations;
-    // let stations = response.features[1].geometry;
     let earthquake_list = response.features
+
     // Initialize an array to hold bike markers.
     let earthquake_markers = [];
     earthquake_list.forEach(earthquake => {
         
         let magnitude = earthquake.properties.mag
         let depth = earthquake.geometry.coordinates[2]
-        // let earthquake_marker = ([earthquake.geometry.coordinates[1], earthquake.geometry.coordinates[0]])
-        // .bindPopup("<h3>" + "" + "<h3><h3>Capacity: " + "" + "</h3>");
 
-        // var earthquake_circle = L.circle([earthquake_marker], {
         var earthquake_circle = L.circle([earthquake.geometry.coordinates[1], earthquake.geometry.coordinates[0]], {
             color: 'black',
             // fillColor: '#f03',
@@ -71,8 +80,8 @@ function createMap(circle_list) {
             fillOpacity: 0.8,
             radius: magnitude * 10000
         })
+            .bindPopup("<h3>" + "Depth" + "<h3><h3>: " + depth + "</h3>" + "<h3>" + "Magnitude" + "<h3><h3>: " + magnitude + "</h3>");
 
-  
         // Add the marker to the bikeMarkers array.
         // earthquake_markers.push(earthquake_marker);
         earthquake_markers.push(earthquake_circle);

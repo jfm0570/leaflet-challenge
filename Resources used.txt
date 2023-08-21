@@ -1,0 +1,7 @@
+Documentation links used:
+
+https://leafletjs.com/examples.html
+https://leafletjs.com/reference.html#map-option
+https://leafletjs.com/examples/quick-start/
+https://leafletjs.com/examples/choropleth/
+https://colorbrewer2.org/#type=diverging&scheme=RdYlGn&n=6
