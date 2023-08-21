@@ -1,3 +1,5 @@
+
+// Code obtained from 02-Stu_CitiBike_Leaflet activity
 function createMap(circle_list) {
     // Create the tile layer that will be the background of our map.
     let streetmap = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -11,7 +13,7 @@ function createMap(circle_list) {
   
     // Create an overlayMaps object to hold the bikeStations layer.
     let overlayMaps = {
-      "Bike Stations": circle_list
+      "Earthquake location": circle_list
     };
   
     // Create the map object with options.
@@ -21,19 +23,10 @@ function createMap(circle_list) {
       layers: [streetmap, circle_list]
     });
   
-
-    // let map = L.map("map", {
-    //     center: [40.73, -74.0059],
-    //     zoom: 12,
-    //     layers: [streetmap, circle_list]
-    // });
-
-
     // Create a layer control, and pass it baseMaps and overlayMaps. Add the layer control to the map.
     L.control.layers(baseMaps, overlayMaps, {
       collapsed: false
     }).addTo(map);
-
 
     var legend = L.control({position: 'bottomright'});
     legend.onAdd = function (map) {
@@ -80,7 +73,7 @@ function createMap(circle_list) {
             fillOpacity: 0.8,
             radius: magnitude * 10000
         })
-            .bindPopup("<h3>" + "Depth" + "<h3><h3>: " + depth + "</h3>" + "<h3>" + "Magnitude" + "<h3><h3>: " + magnitude + "</h3>");
+            .bindPopup("<h3>" + "Depth: " + depth + "</h3>" + "<h3>" + "Magnitude: " + magnitude + "</h3>");
 
         // Add the marker to the bikeMarkers array.
         // earthquake_markers.push(earthquake_marker);
@@ -103,7 +96,6 @@ function createMap(circle_list) {
     // Create a layer group that's made from the bike markers array, and pass it to the createMap function.
     createMap(L.layerGroup(earthquake_markers));
   }
-  
   
   // Perform an API call to the Citi Bike API to get the station information. Call createMarkers when it completes.
   d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson").then(createMarkers);
